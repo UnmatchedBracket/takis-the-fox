@@ -10,10 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Make date
-      run: |
-        THEDATE=$(date +%d-%m-%Y)
-        echo "THEDATE=$THEDATE" >> $GITHUB_ENV
-        echo -n "$THEDATE" > date.txt
+      run: echo "THEDATE=$(date +%Y-%m-%d)" >> $GITHUB_ENV
     - name: Make dummy package lock
       run: echo '{"name":"dummy","version":"1.0.0","lockfileVersion":3,"requires":true,"packages":{}}}' > package-lock.json
     - name: Use Node.js 18.x
@@ -43,12 +40,12 @@ jobs:
         with:
           name: 'takis.zip'
           path: .
-      - run: ls
-      - run: bash -c "ls *"
-      - run: bash -c "mv Takis* TakisBuild-${{ env.THEDATE }}.pk3"
+      - name: Get file name that just downloaded
+        run: |
+          echo "TAKISNAME=$(ls)" >> $GITHUB_ENV
       - name: Send to discord channel
         uses: sinshutu/upload-to-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          args: TakisBuild-${{ env.THEDATE }}.pk3
+          args: TakisBuild-${{ env.TAKISNAME }}.pk3
