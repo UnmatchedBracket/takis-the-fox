@@ -9,7 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: echo '{"name":"dummy","version":"1.0.0","lockfileVersion":3,"requires":true,"packages":{}}}' > package-lock.json
+    - name: Make dummy package lock
+      run: echo '{"name":"dummy","version":"1.0.0","lockfileVersion":3,"requires":true,"packages":{}}}' > package-lock.json
     - name: Use Node.js 18.x
       uses: actions/setup-node@v3
       with:
@@ -17,13 +18,13 @@ jobs:
         cache: 'npm'
     - run: git clone https://github.com/UnmatchedBracket/PaK3
     - run: bash -c "cd PaK3; npm i"
-    - run: node PaK3/main.js src/ TakisBuild-$(date '+%d-%m-%Y').pk3
+    - run: node PaK3/main.js src/ TakisBuild-${{ shell date +%d-%m-%Y }}.pk3
     # -$(date '+%d-%m-%Y')
     - name: Upload Takis
       uses: actions/upload-artifact@v3.1.0
       with:
         name: 'takis.zip'
-        path: "TakisBuild-$(date '+%d-%m-%Y').pk3"
+        path: "TakisBuild-${{ shell date +%d-%m-%Y }}.pk3"
         if-no-files-found: error
   discord:
     runs-on: ubuntu-latest
@@ -33,10 +34,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: 'takis'
-      - run: mv takis* TakisBuild-$(date '+%d-%m-%Y').pk3
+      - run: mv takis* TakisBuild-${{ shell date +%d-%m-%Y }}.pk3
       - name: Send to discord channel
         uses: sinshutu/upload-to-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          args: TakisBuild-$(date '+%d-%m-%Y').pk3
+          args: TakisBuild-${{ shell date +%d-%m-%Y }}.pk3
