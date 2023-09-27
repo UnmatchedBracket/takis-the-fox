@@ -42,7 +42,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: 'takis.zip'
-      #- run: bash -c "mv takis* TakisBuild-${{ env.THEDATE }}.pk3"
+          path: .
+      - run: ls
+      - run: bash -c "ls *"
+      - run: bash -c "mv Takis* TakisBuild-${{ env.THEDATE }}.pk3"
       - name: Send to discord channel
         uses: sinshutu/upload-to-discord@master
         env:
