@@ -28,24 +28,9 @@ jobs:
         name: 'takis.zip'
         path: "TakisBuild-${{ env.THEDATE }}.pk3"
         if-no-files-found: error
-  discord:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      #- name: Get date from previous step
-      #  run: |
-      #    echo 
-      - name: Download file
-        uses: actions/download-artifact@v2
-        with:
-          name: 'takis.zip'
-          path: .
-      - name: Get file name that just downloaded
-        run: |
-          echo "TAKISNAME=$(ls)" >> $GITHUB_ENV
-      - name: Send to discord channel
-        uses: sinshutu/upload-to-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: TakisBuild-${{ env.TAKISNAME }}.pk3
+    - name: Send to discord channel
+      uses: sinshutu/upload-to-discord@master
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      with:
+        args: TakisBuild-${{ env.THEDATE }}.pk3
