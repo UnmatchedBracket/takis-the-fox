@@ -18,17 +18,20 @@ jobs:
       with:
         node-version: '18.x'
         cache: 'npm'
-    - run: git clone https://github.com/UnmatchedBracket/PaK3
-    - run: bash -c "cd PaK3; npm i"
-    - run: node PaK3/main.js src/ TakisBuild-${{ env.THEDATE }}.pk3
+    - name: Download PaK3
+      run: git clone https://github.com/UnmatchedBracket/PaK3
+    - name: Download PaK3`s dependencies
+      run: bash -c "cd PaK3; npm i"
+    - name: Run PaK3
+      run: node PaK3/main.js src/ TakisBuild-${{ env.THEDATE }}.pk3
     # -$(date '+%d-%m-%Y')
-    - name: Upload Takis
+    - name: Upload Takis - Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
         name: 'takis.zip'
         path: "TakisBuild-${{ env.THEDATE }}.pk3"
         if-no-files-found: error
-    - name: Send to discord channel
+    - name: Upload Takis - Discord
       uses: sinshutu/upload-to-discord@master
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
